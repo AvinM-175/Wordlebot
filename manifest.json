@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "WordleBot",
+  "version": "1.0.0",
+  "description": "Real-time Wordle solving assistant - suggests optimal guesses based on game state",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.nytimes.com/games/wordle/*"],
+      "js": [
+        "src/dictExtractor.js",
+        "src/dictionary.js",
+        "src/domReader.js",
+        "src/frequencyTables.js",
+        "src/frequencyScorer.js",
+        "src/entropyEngine.js",
+        "src/constraintEngine.js",
+        "src/suggestionEngine.js",
+        "src/panelUI.js",
+        "src/panelRenderer.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["data/NYTWordleList.txt"],
+      "matches": ["https://www.nytimes.com/*"]
+    }
+  ]
+}
