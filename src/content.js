@@ -202,7 +202,7 @@ async function loadDictionaryAndCaches(forceRebuild) {
   // Cache miss or force rebuild -- compute fresh
   window.WordleBot.freq.buildTables(dictResult.words);
   var commonness = window.WordleBot.freq.computeCommonness(dictResult.words, window.WordleBot.freq.tables);
-  window.WordleBot.entropy.init(dictResult.words, window.WordleBot.freq.tables, commonness);
+  await window.WordleBot.entropy.init(dictResult.words, window.WordleBot.freq.tables, commonness);
 
   // Persist computational cache
   await chrome.storage.local.set({

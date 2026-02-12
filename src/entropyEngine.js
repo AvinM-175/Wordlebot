@@ -290,7 +290,9 @@ window.WordleBot = window.WordleBot || {};
   }
 
   // --- Init: Called once at load time (cache miss) ---
-  function init(dict, freqTables, cmnData) {
+  // Async: offloads O(n²) entropy computation to a Web Worker so the main
+  // thread stays fully responsive (spinner animates, page is interactive).
+  async function init(dict, freqTables, cmnData) {
     var t0 = performance.now();
 
     dictionary = dict;
@@ -300,28 +302,96 @@ window.WordleBot = window.WordleBot || {};
     // Pre-encode every word as Uint8Array(5) with values 0-25
     var len = dictionary.length;
     encodedWords = new Array(len);
+
+    // Also build a flat buffer for zero-copy transfer to the Worker
+    var flatEncoded = new Uint8Array(len * 5);
+
     for (var w = 0; w < len; w++) {
       var word = dictionary[w];
       var enc = new Uint8Array(5);
+      var off = w * 5;
       enc[0] = word.charCodeAt(0) - 97;
       enc[1] = word.charCodeAt(1) - 97;
       enc[2] = word.charCodeAt(2) - 97;
       enc[3] = word.charCodeAt(3) - 97;
       enc[4] = word.charCodeAt(4) - 97;
       encodedWords[w] = enc;
+      flatEncoded[off]     = enc[0];
+      flatEncoded[off + 1] = enc[1];
+      flatEncoded[off + 2] = enc[2];
+      flatEncoded[off + 3] = enc[3];
+      flatEncoded[off + 4] = enc[4];
     }
 
-    // Compute and cache first-guess rankings
-    var allIndices = new Array(len);
+    // Spawn Worker — computes entropy for every word against every word.
+    // Content scripts share the page's origin, so we can't use chrome-extension:// URLs
+    // directly. Fetch the script and create a same-origin Blob URL instead.
+    var scriptUrl = chrome.runtime.getURL('src/entropyWorker.js');
+    var resp = await fetch(scriptUrl);
+    var scriptText = await resp.text();
+    var blob = new Blob([scriptText], { type: 'application/javascript' });
+    var blobUrl = URL.createObjectURL(blob);
+
+    var entropies = await new Promise(function (resolve, reject) {
+      var worker = new Worker(blobUrl);
+      URL.revokeObjectURL(blobUrl);
+      worker.onmessage = function (e) {
+        resolve(e.data.entropies);
+        worker.terminate();
+      };
+      worker.onerror = function (e) {
+        reject(new Error('Entropy worker failed: ' + (e.message || 'unknown error')));
+        worker.terminate();
+      };
+      // Transfer flatEncoded buffer (zero-copy, main thread releases it)
+      worker.postMessage(
+        { encodedWords: flatEncoded, wordCount: len },
+        [flatEncoded.buffer]
+      );
+    });
+
+    // Build result objects from raw entropies returned by the Worker
+    var results = new Array(len);
     for (var i = 0; i < len; i++) {
-      allIndices[i] = i;
+      results[i] = { wordIndex: i, entropy: entropies[i] };
     }
 
-    var fullResult = rankGuessesForState(allIndices, 6);
+    // Sort descending by entropy, tie-break by frequency score (main thread — fast)
+    results.sort(function (a, b) {
+      var diff = b.entropy - a.entropy;
+      if (Math.abs(diff) < 1e-6) {
+        var scoreA = window.WordleBot.freq.scoreWord(dictionary[a.wordIndex], frequencyTables).composite;
+        var scoreB = window.WordleBot.freq.scoreWord(dictionary[b.wordIndex], frequencyTables).composite;
+        return scoreB - scoreA;
+      }
+      return diff;
+    });
+
+    // Map wordIndex → word string
+    for (var i = 0; i < len; i++) {
+      results[i].word = dictionary[results[i].wordIndex];
+    }
+
+    // bestInfoGuesses: top results sorted by entropy
+    var bestInfoGuesses = results.slice(0, FIRST_GUESS_CACHE_SIZE);
+
+    // bestAnswerGuesses: same ranking with commonness data (urgency=0.0 → blendedScore = entropy)
+    var answerCount = Math.min(len, FIRST_GUESS_CACHE_SIZE);
+    var bestAnswerGuesses = new Array(answerCount);
+    for (var i = 0; i < answerCount; i++) {
+      var r = results[i];
+      bestAnswerGuesses[i] = {
+        wordIndex: r.wordIndex,
+        word: r.word,
+        entropy: r.entropy,
+        commonness: (commonnessData && commonnessData.max > 0) ? commonnessData.scores[r.wordIndex] : 0,
+        blendedScore: r.entropy
+      };
+    }
 
     firstGuessCache = {
-      bestInfoGuesses: fullResult.bestInfoGuesses.slice(0, FIRST_GUESS_CACHE_SIZE),
-      bestAnswerGuesses: fullResult.bestAnswerGuesses.slice(0, FIRST_GUESS_CACHE_SIZE)
+      bestInfoGuesses: bestInfoGuesses,
+      bestAnswerGuesses: bestAnswerGuesses
     };
 
     var t1 = performance.now();
@@ -333,7 +403,7 @@ window.WordleBot = window.WordleBot || {};
       ? firstGuessCache.bestInfoGuesses[0].entropy.toFixed(2)
       : '0';
 
-    console.log('[WordleBot] Entropy engine initialized in ' + elapsed + 'ms (top info guess: ' + topWord + ' at ' + topEntropy + ' bits)');
+    console.log('[WordleBot] Entropy engine initialized in ' + elapsed + 'ms via Worker (top info guess: ' + topWord + ' at ' + topEntropy + ' bits)');
   }
 
   // --- Get cached first-guess rankings ---
