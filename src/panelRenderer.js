@@ -53,7 +53,7 @@
       return;
     }
 
-    if (suggestions.mode === 'solved') {
+    if (suggestions.mode === 'solved' || suggestions.mode === 'lost') {
       renderSolvedState(suggestions, body, isInitial);
       return;
     }

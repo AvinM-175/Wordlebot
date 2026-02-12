@@ -23,6 +23,11 @@ window.WordleBot = window.WordleBot || {};
       return 'solved';
     }
 
+    // Lost: all guesses used without solving
+    if (boardState.status === 'lost') {
+      return 'lost';
+    }
+
     // Opener: no guesses yet (unconstrained)
     if (constraintResult.unconstrained || boardState.guesses.length === 0) {
       return 'opener';
@@ -332,6 +337,7 @@ window.WordleBot = window.WordleBot || {};
       var n = boardState.guesses.length;
       return 'Solved in ' + n + (n === 1 ? ' guess!' : ' guesses!');
     }
+    if (mode === 'lost') { return 'Game over'; }
     if (mode === 'error') { return 'Error'; }
     return 'Suggestions';
   }
@@ -356,7 +362,25 @@ window.WordleBot = window.WordleBot || {};
       };
     }
 
-    // 3. Solved mode: return with summary and game context
+    // 3a. Lost mode: return with game context and remaining candidates
+    if (mode === 'lost') {
+      var lostCandidateCount = constraintResult.candidates.length;
+      var lostSummary = buildSolvedSummary(boardState, constraintResult, dictionary);
+      if (lostCandidateCount > 0) {
+        lostSummary += ' ' + lostCandidateCount + (lostCandidateCount === 1 ? ' word' : ' words') + ' remained.';
+      }
+      return {
+        mode: 'lost',
+        header: getHeader('lost', boardState),
+        candidateCount: lostCandidateCount,
+        gameContext: buildGameContext(boardState, constraintResult, dictionary),
+        suggestions: [],
+        nearTieNote: null,
+        solvedSummary: lostSummary
+      };
+    }
+
+    // 3b. Solved mode: return with summary and game context
     if (mode === 'solved') {
       return {
         mode: 'solved',
