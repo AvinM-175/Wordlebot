@@ -32,9 +32,8 @@ WordleBot
 
   Installation
     Option 1: Directly from Chrome Web Store:
-  
-      👉 https://chromewebstore.google.com/detail/wordlebot/igkkkejcelpgeeefjgbnbdmabhdcegbm
-
+    👉 https://chromewebstore.google.com/detail/wordlebot/igkkkejcelpgeeefjgbnbdmabhdcegbm
+    
     Option 2:
       1. Clone or download this repo
       2. Open chrome://extensions in Chrome
