@@ -19,7 +19,8 @@
     hasError: false,
     errorMessage: '',
     loadingStartTime: 0,
-    pendingLoadingClear: null
+    pendingLoadingClear: null,
+    clickDelegationBound: false
   };
 
   // Minimum spinner visible duration (ms)
@@ -136,8 +137,11 @@
       body.appendChild(card);
     }
 
-    // Setup event delegation for click handling
-    body.addEventListener('click', handleCardClick);
+    // Setup event delegation for click handling (once only)
+    if (!state.clickDelegationBound) {
+      body.addEventListener('click', handleCardClick);
+      state.clickDelegationBound = true;
+    }
   }
 
   /**
