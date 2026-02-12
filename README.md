@@ -31,7 +31,7 @@ WordleBot
   - Fast — entropy calculations run in a Web Worker so the page never freezes; first-guess results are pre-cached
 
   Installation
-    Option 1: Directly from Chrom Web Store
+    Option 1: Directly from Chrome Web Store:
   
       👉 https://chromewebstore.google.com/detail/wordlebot/igkkkejcelpgeeefjgbnbdmabhdcegbm
 
