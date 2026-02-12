@@ -32,14 +32,14 @@ WordleBot
 
   Installation
     Option 1: Directly from Chrome Web Store:
-    👉 https://chromewebstore.google.com/detail/wordlebot/igkkkejcelpgeeefjgbnbdmabhdcegbm
+    https://chromewebstore.google.com/detail/wordlebot/igkkkejcelpgeeefjgbnbdmabhdcegbm
     
     Option 2:
-      1. Clone or download this repo
-      2. Open chrome://extensions in Chrome
-      3. Enable Developer mode (top-right toggle)
-      4. Click Load unpacked and select the project folder
-      5. Navigate to https://www.nytimes.com/games/wordle/index.html and start playing — the suggestion panel appears automatically
+    1. Clone or download this repo
+    2. Open chrome://extensions in Chrome
+    3. Enable Developer mode (top-right toggle)
+    4. Click Load unpacked and select the project folder
+    5. Navigate to https://www.nytimes.com/games/wordle/index.html and start playing — the suggestion panel appears automatically
       
 
   Project Structure
