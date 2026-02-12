@@ -108,7 +108,8 @@ function showSourceIndicator(dictResult) {
   if (dictResult.source === 'cached') {
     text = 'Using cached dictionary';
   } else if (dictResult.source === 'bundled') {
-    text = 'Using offline dictionary';
+    text = 'Using fallback dictionary \u2014 stats may differ from live data';
+    console.warn('[WordleBot] Running on bundled fallback dictionary. Live extraction failed.');
   }
 
   if (!text) {
