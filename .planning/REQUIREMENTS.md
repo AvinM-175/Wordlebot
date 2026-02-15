@@ -49,26 +49,26 @@ Requirements for v1.7: Dictionary Intelligence + Onboarding.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DICT-01 | — | Pending |
-| DICT-02 | — | Pending |
-| DICT-03 | — | Pending |
-| DICT-04 | — | Pending |
-| DICT-05 | — | Pending |
-| DICT-06 | — | Pending |
-| DICT-07 | — | Pending |
-| ONBD-01 | — | Pending |
-| ONBD-02 | — | Pending |
-| ONBD-03 | — | Pending |
-| ONBD-04 | — | Pending |
-| ONBD-05 | — | Pending |
-| ONBD-06 | — | Pending |
-| ONBD-07 | — | Pending |
+| DICT-01 | Phase 14 | Pending |
+| DICT-02 | Phase 15 | Pending |
+| DICT-03 | Phase 15 | Pending |
+| DICT-04 | Phase 14 | Pending |
+| DICT-05 | Phase 15 | Pending |
+| DICT-06 | Phase 15 | Pending |
+| DICT-07 | Phase 14 | Pending |
+| ONBD-01 | Phase 16 | Pending |
+| ONBD-02 | Phase 16 | Pending |
+| ONBD-03 | Phase 17 | Pending |
+| ONBD-04 | Phase 17 | Pending |
+| ONBD-05 | Phase 17 | Pending |
+| ONBD-06 | Phase 17 | Pending |
+| ONBD-07 | Phase 17 | Pending |
 
 **Coverage:**
 - v1.7 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14
+- Mapped to phases: 14
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-14 after initial definition*
+*Last updated: 2026-02-15 after roadmap creation (phases 14-17 assigned)*
