@@ -29,7 +29,8 @@ Help players understand *why* certain guesses are mathematically better — a st
 
 ### Active
 
-(None — next milestone not yet planned)
+- Smart dictionary change detection (replace 30-day timer with fingerprint-based staleness check)
+- First-install onboarding (dismissable intro: how it works, card expansion, shift+refresh)
 
 ### Out of Scope
 
@@ -67,5 +68,13 @@ NYT merged their solution + guess lists into a single combined list — no separ
 - All data stays local in chrome.storage.local (Principle 2)
 - Single permission: "storage" only
 
+## Current Milestone: v1.7 Dictionary Intelligence + Onboarding
+
+**Goal:** Smarter dictionary caching and first-use guidance for new users.
+
+**Target features:**
+- Smart dictionary change detection — fingerprint NYT dictionary to detect updates without full comparison; if not feasible without performance cost, keep 30-day timer
+- First-install onboarding — dismissable intro covering how the extension works, click-to-expand cards, and shift+refresh for dictionary reset
+
 ---
-*Last updated: 2026-02-12 after v1.5 milestone*
+*Last updated: 2026-02-14 after v1.7 milestone start*
