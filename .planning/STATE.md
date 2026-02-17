@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Help players understand *why* certain guesses are mathematically better
-**Current focus:** Phase 14 — Dictionary Change Detection Infrastructure
+**Current focus:** Phase 15 — Content.js Wiring — Background Update Check
 
 ## Current Position
 
-Phase: 14 of 17 (Dictionary Change Detection Infrastructure)
-Plan: 1 of TBD in current phase
-Status: In progress
-Last activity: 2026-02-17 — Completed 14-01 (bundle URL cache infrastructure)
+Phase: 15 of 17 (Content.js Wiring — Background Update Check)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-02-17 — Phase 14 complete, verified
 
-Progress: [█░░░░░░░░░] 10% (v1.7)
+Progress: [███░░░░░░░] 25% (v1.7)
 
 ## Performance Metrics
 
@@ -59,5 +59,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 14-01-PLAN.md — bundle URL cache infrastructure done
+Stopped at: Phase 14 complete and verified, ready to plan Phase 15
 Resume file: None

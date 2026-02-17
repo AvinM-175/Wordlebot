@@ -9,13 +9,13 @@ Requirements for v1.7: Dictionary Intelligence + Onboarding.
 
 ### Dictionary Change Detection
 
-- [ ] **DICT-01**: Extension stores the NYT bundle URL alongside the cached dictionary for future comparison
+- [x] **DICT-01**: Extension stores the NYT bundle URL alongside the cached dictionary for future comparison
 - [ ] **DICT-02**: On page load with a fresh cache, extension compares stored bundle URL against current bundle URL to detect dictionary changes
 - [ ] **DICT-03**: When bundle URL changes, extension re-extracts the dictionary and rebuilds computational caches automatically
-- [ ] **DICT-04**: When bundle URL matches (no change), extension serves cached dictionary with zero extraction overhead
+- [x] **DICT-04**: When bundle URL matches (no change), extension serves cached dictionary with zero extraction overhead
 - [ ] **DICT-05**: After serving cached dictionary, extension checks for content changes in the background without blocking suggestions
 - [ ] **DICT-06**: If background check detects a fingerprint mismatch (same URL, different content), extension rebuilds caches and re-renders suggestions
-- [ ] **DICT-07**: 30-day staleness timer remains as a fallback for cases where bundle URL cannot be determined
+- [x] **DICT-07**: 30-day staleness timer remains as a fallback for cases where bundle URL cannot be determined
 
 ### First-Install Onboarding
 
@@ -49,13 +49,13 @@ Requirements for v1.7: Dictionary Intelligence + Onboarding.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DICT-01 | Phase 14 | Pending |
+| DICT-01 | Phase 14 | Done |
 | DICT-02 | Phase 15 | Pending |
 | DICT-03 | Phase 15 | Pending |
-| DICT-04 | Phase 14 | Pending |
+| DICT-04 | Phase 14 | Done |
 | DICT-05 | Phase 15 | Pending |
 | DICT-06 | Phase 15 | Pending |
-| DICT-07 | Phase 14 | Pending |
+| DICT-07 | Phase 14 | Done |
 | ONBD-01 | Phase 16 | Pending |
 | ONBD-02 | Phase 16 | Pending |
 | ONBD-03 | Phase 17 | Pending |
