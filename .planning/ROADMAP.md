@@ -27,10 +27,10 @@ Phases 1-13 delivered the full-featured WordleBot extension: runtime dictionary 
   1. After a successful dictionary extraction, the cached entry includes the bundle URL alongside words and fingerprint
   2. On page load with a fresh cache, the extension serves cached words immediately when the stored URL matches the current bundle URL — no extraction runs
   3. When the 30-day timer expires and no bundle URL can be determined, the cache is treated as stale and extraction is triggered as before
-**Plans:** TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 14-01: TBD
+- [ ] 14-01-PLAN.md — Export findBundleUrl, add URL pre-check to loadFromCache, store bundleUrl in saveToCache
 
 #### Phase 15: Content.js Wiring — Background Update Check
 
@@ -84,7 +84,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1-13. v1.5 phases | v1.5 | Complete | Complete | 2026-02-12 |
-| 14. Dictionary Change Detection Infrastructure | v1.7 | 0/TBD | Not started | - |
+| 14. Dictionary Change Detection Infrastructure | v1.7 | 0/1 | Planning complete | - |
 | 15. Content.js Wiring — Background Update Check | v1.7 | 0/TBD | Not started | - |
 | 16. First-Install Detection Logic | v1.7 | 0/TBD | Not started | - |
 | 17. Onboarding UI and Integration | v1.7 | 0/TBD | Not started | - |
