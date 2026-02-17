@@ -10,24 +10,24 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 14 of 17 (Dictionary Change Detection Infrastructure)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-02-15 — Roadmap created for v1.7 (phases 14-17)
+Plan: 1 of TBD in current phase
+Status: In progress
+Last activity: 2026-02-17 — Completed 14-01 (bundle URL cache infrastructure)
 
-Progress: [░░░░░░░░░░] 0% (v1.7)
+Progress: [█░░░░░░░░░] 10% (v1.7)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0 (v1.7)
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 1 (v1.7)
+- Average duration: 1 min
+- Total execution time: 1 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 14-01 | 1 | 1 min | 1 min |
 
 *Updated after each plan completion*
 
@@ -42,6 +42,10 @@ Recent decisions affecting current work:
 - [v1.7 Roadmap]: bundleUrl stored in wordlebot_dict cache entry alongside words and fingerprint
 - [v1.7 Roadmap]: wordlebot_onboarded excluded from clearCaches() — not a computational cache
 - [v1.7 Roadmap]: Onboarding mounting strategy (Option A vs B) must be decided before Phase 17 — see research/PITFALLS.md Pitfall 3
+- [14-01]: findBundleUrl exported from dictExtractor (not duplicated in dictionary.js) — dictExtractor owns URL discovery
+- [14-01]: findBundleUrl called in loadDictionary before loadFromCache, passed as arg (not called inside loadFromCache)
+- [14-01]: URL pre-check guard: both currentBundleUrl and cacheData.bundleUrl must be non-null for comparison to run — pre-Phase-14 cache entries fall through to 30-day timer
+- [14-01]: urlResult[0] used to normalize findBundleUrl array return — Strategy 1 unshifts primary bundle to position 0
 
 ### Pending Todos
 
@@ -49,11 +53,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 14]: findBundleUrl() currently called inside dictExtractor.extract(). URL pre-check requires it callable earlier in loadFromCache(). Confirm viable at Phase 14 start.
+- [Phase 14 RESOLVED]: findBundleUrl() was private inside dictExtractor IIFE — now exported as public API in 14-01
 - [Phase 17]: Mounting strategy undecided — (A) isOnboardingActive guard in processBoardState() vs (B) shadow root sibling mount. Must resolve before any UI code. Research recommends Option A.
 
 ## Session Continuity
 
-Last session: 2026-02-15
-Stopped at: Roadmap written for v1.7, ready to plan Phase 14
+Last session: 2026-02-17
+Stopped at: Completed 14-01-PLAN.md — bundle URL cache infrastructure done
 Resume file: None
