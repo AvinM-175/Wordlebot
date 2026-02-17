@@ -102,7 +102,7 @@ window.WordleBot = window.WordleBot || {};
 
   /**
    * Attempt a single live extraction via dictExtractor.
-   * Returns the word array on success, or null on failure.
+   * Returns { words, bundleUrl } on success, or null on failure.
    */
   async function tryExtraction() {
     try {
@@ -112,7 +112,7 @@ window.WordleBot = window.WordleBot || {};
       }
       var result = await window.WordleBot.dictExtractor.extract();
       if (result.success && result.allWords && result.allWords.length > 0) {
-        return result.allWords;
+        return { words: result.allWords, bundleUrl: result.bundleUrl || null };
       }
       console.warn('[WordleBot] Extraction returned failure: ' + (result.error || 'unknown'));
       return null;
@@ -242,15 +242,16 @@ window.WordleBot = window.WordleBot || {};
     }
 
     // Step C: Try live extraction with retry
-    var extractedWords = await tryExtractionWithRetry();
+    var extractionResult = await tryExtractionWithRetry();
 
-    if (extractedWords) {
-      var fp = await computeFingerprint(extractedWords);
+    if (extractionResult) {
+      var fp = await computeFingerprint(extractionResult.words);
       var result = {
-        words: extractedWords,
+        words: extractionResult.words,
         source: 'extracted',
         freshness: 'fresh',
-        fingerprint: fp
+        fingerprint: fp,
+        bundleUrl: extractionResult.bundleUrl
       };
 
       console.log('[WordleBot] Dictionary extracted (' +

@@ -471,7 +471,8 @@ window.WordleBot = window.WordleBot || {};
 
   // Export to namespace
   window.WordleBot.dictExtractor = {
-    extract: extract
+    extract: extract,
+    findBundleUrl: findBundleUrl
   };
 
 })();
