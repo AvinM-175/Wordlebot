@@ -142,12 +142,16 @@ window.WordleBot = window.WordleBot || {};
   /**
    * Load dictionary from chrome.storage.local cache.
    * Validates structure and bundled fingerprint match.
+   * Performs O(1) bundle URL pre-check when both currentBundleUrl and
+   * cacheData.bundleUrl are non-null (DICT-01/DICT-04).
+   * Falls back to 30-day staleness timer when URL is unavailable (DICT-07).
    * Returns a DictionaryResult on hit, or null on miss/invalidation.
    *
    * @param {string} currentBundledFp - Current bundled dictionary fingerprint.
+   * @param {string|null} currentBundleUrl - Current NYT bundle URL, or null if unavailable.
    * @returns {Promise<Object|null>} DictionaryResult or null.
    */
-  async function loadFromCache(currentBundledFp) {
+  async function loadFromCache(currentBundledFp, currentBundleUrl) {
     try {
       var stored = await chrome.storage.local.get(CACHE_KEY);
       var cacheData = stored[CACHE_KEY];
@@ -161,6 +165,29 @@ window.WordleBot = window.WordleBot || {};
         console.log('[WordleBot] Bundled dictionary changed -- cache invalidated');
         return null;
       }
+
+      // Bundle URL pre-check (O(1) staleness signal) -- DICT-01/DICT-04
+      if (currentBundleUrl !== null && cacheData.bundleUrl) {
+        if (cacheData.bundleUrl !== currentBundleUrl) {
+          console.log('[WordleBot] Bundle URL changed -- cache invalidated (new bundle: ' +
+            currentBundleUrl.split('/').pop() + ')');
+          return null;  // force extraction
+        }
+        // URL match: cache is definitively fresh -- skip 30-day check
+        var freshResult = {
+          words: cacheData.words,
+          source: 'cached',
+          freshness: 'fresh',
+          fingerprint: cacheData.fingerprint
+        };
+        console.log('[WordleBot] Dictionary loaded from cache (' +
+          freshResult.words.length + ' words, URL match, fingerprint: ' +
+          freshResult.fingerprint.substring(0, 8) + ')');
+        return freshResult;
+      }
+
+      // FALLBACK: No URL available (null currentBundleUrl or missing cacheData.bundleUrl)
+      // Use 30-day timer (DICT-07)
 
       // Check staleness (Decision #5: 30-day window)
       var age = Date.now() - cacheData.extractedAt;
@@ -202,7 +229,8 @@ window.WordleBot = window.WordleBot || {};
         fingerprint: dictResult.fingerprint,
         extractedAt: Date.now(),
         bundledFingerprint: bundledFp,
-        source: dictResult.source
+        source: dictResult.source,
+        bundleUrl: dictResult.bundleUrl || null
       };
       var storageObj = {};
       storageObj[CACHE_KEY] = entry;
@@ -227,9 +255,29 @@ window.WordleBot = window.WordleBot || {};
     // Step A: Get bundled fingerprint (memoized after first call)
     var bundledFp = await getBundledFingerprint();
 
+    // Step A2: Discover current bundle URL for pre-check (DICT-01)
+    var currentBundleUrl = null;
+    if (window.WordleBot.dictExtractor && window.WordleBot.dictExtractor.findBundleUrl) {
+      try {
+        var urlResult = window.WordleBot.dictExtractor.findBundleUrl();
+        // findBundleUrl may return a Promise (async for Strategies 2-4)
+        if (urlResult && typeof urlResult.then === 'function') {
+          urlResult = await urlResult;
+        }
+        // Normalize: string | string[] | null -> string | null
+        if (typeof urlResult === 'string') {
+          currentBundleUrl = urlResult;
+        } else if (Array.isArray(urlResult) && urlResult.length > 0) {
+          currentBundleUrl = urlResult[0];
+        }
+      } catch (e) {
+        console.warn('[WordleBot] findBundleUrl() pre-check failed: ' + e.message);
+      }
+    }
+
     // Step B: Try cache fast path (unless forceRefresh)
     if (!forceRefresh) {
-      var cached = await loadFromCache(bundledFp);
+      var cached = await loadFromCache(bundledFp, currentBundleUrl);
       if (cached) {
         if (cached.freshness === 'fresh') {
           // FAST PATH: fresh cache, skip extraction entirely
