@@ -81,10 +81,10 @@ Plans:
 
 **Goal:** Refine the entropy/frequency model to naturally surface a broader variety of strong opening words (e.g., CRANE, SLATE, ADIEU alongside TARES) without hardcoding — so first-guess recommendations feel less repetitive and better represent the space of strong openers.
 **Depends on:** Phase 17
-**Plans:** TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 18-01: TBD
+- [ ] 18-01-PLAN.md — Add diversity-aware near-tie reordering and update footer message
 
 ## Progress
 
