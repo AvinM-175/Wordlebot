@@ -39,6 +39,7 @@ function debounce(fn, delay) {
 
 var DEBOUNCE_DELAY = 300;
 var isComputing = false;
+var isOnboardingActive = false;
 
 // Performance timing for staged initialization
 var TIMING = {
@@ -145,6 +146,107 @@ function removeSourceIndicator() {
   if (existing) {
     existing.remove();
   }
+}
+
+/**
+ * Escape key handler for dismissing onboarding overlay
+ */
+function escapeKeyHandler(event) {
+  if (event.key === 'Escape') {
+    dismissOnboarding();
+  }
+}
+
+/**
+ * Render onboarding overlay in the panel body
+ * Builds overlay using createElement (no innerHTML for content)
+ */
+function renderOnboarding() {
+  var body = window.WordleBot.panelUI.getBody();
+  if (!body) return;
+
+  // Clear body and ensure visible
+  body.innerHTML = '';
+  body.style.opacity = '1';
+
+  // Overlay container
+  var overlay = document.createElement('div');
+  overlay.className = 'onboarding-overlay';
+
+  // Title
+  var title = document.createElement('div');
+  title.className = 'onboarding-title';
+  title.textContent = 'Welcome to WordleBot!';
+
+  // Tips list
+  var tipsList = document.createElement('ol');
+  tipsList.className = 'onboarding-tips';
+
+  var tipsData = [
+    { num: '1.', text: 'WordleBot looks at your Wordle board and suggests the best next guess \u2014 ranked by how much each word narrows down the answer.' },
+    { num: '2.', text: 'Tap any suggestion to see why it\u2019s recommended. Tap again for more detail. Tap once more to collapse it.' },
+    { num: '3.', text: 'If WordleBot ever seems out of sync, Shift+click the refresh button in the top right to reset everything.' }
+  ];
+
+  for (var i = 0; i < tipsData.length; i++) {
+    var li = document.createElement('li');
+    li.className = 'onboarding-tip';
+
+    var numSpan = document.createElement('span');
+    numSpan.className = 'onboarding-tip-number';
+    numSpan.textContent = tipsData[i].num;
+
+    li.appendChild(numSpan);
+    li.appendChild(document.createTextNode(tipsData[i].text));
+    tipsList.appendChild(li);
+  }
+
+  // Dismiss button
+  var btn = document.createElement('button');
+  btn.className = 'onboarding-dismiss-btn';
+  btn.setAttribute('type', 'button');
+  btn.textContent = 'Got it';
+  btn.addEventListener('click', dismissOnboarding);
+
+  overlay.appendChild(title);
+  overlay.appendChild(tipsList);
+  overlay.appendChild(btn);
+  body.appendChild(overlay);
+
+  document.addEventListener('keydown', escapeKeyHandler);
+}
+
+/**
+ * Dismiss onboarding overlay
+ * Writes storage BEFORE DOM removal (locked decision from CONTEXT.md)
+ */
+function dismissOnboarding() {
+  chrome.storage.local.set({ wordlebot_onboarded: true }).then(function() {
+    isOnboardingActive = false;
+    var body = window.WordleBot.panelUI.getBody();
+    if (body) { body.innerHTML = ''; }
+    if (window.WordleBot.lastSuggestions) {
+      window.WordleBot.panelRenderer.render(window.WordleBot.lastSuggestions, true);
+      if (window.WordleBot.dictionaryResult) {
+        showSourceIndicator(window.WordleBot.dictionaryResult);
+      }
+    } else {
+      var currentState = window.WordleBot.readBoardState();
+      if (currentState && !isComputing) {
+        processBoardState(currentState, true);
+      }
+    }
+    document.removeEventListener('keydown', escapeKeyHandler);
+  }).catch(function(err) {
+    console.warn('[WordleBot] Failed to persist onboarding dismissal: ' + err.message);
+    isOnboardingActive = false;
+    var body = window.WordleBot.panelUI.getBody();
+    if (body) { body.innerHTML = ''; }
+    if (window.WordleBot.lastSuggestions) {
+      window.WordleBot.panelRenderer.render(window.WordleBot.lastSuggestions, true);
+    }
+    document.removeEventListener('keydown', escapeKeyHandler);
+  });
 }
 
 /**
@@ -256,6 +358,99 @@ async function loadDictionaryAndCaches(forceRebuild) {
   return { words: dictResult.words, fingerprint: fingerprint, wasRebuilt: wasRebuilt, dictResult: dictResult };
 }
 
+/**
+ * Board state processing pipeline
+ * Computes suggestions from current board state and renders to panel.
+ * isOnboardingActive guard: stores lastSuggestions but skips render while onboarding is shown.
+ */
+function processBoardState(boardState, isInitial) {
+  // Prevent concurrent processing
+  if (isComputing) {
+    console.log('[WordleBot] Skipping - already computing');
+    return;
+  }
+
+  isComputing = true;
+
+  // Show loading state (unless initial load)
+  if (!isInitial) {
+    window.WordleBot.panelRenderer.setLoading(true);
+  }
+
+  try {
+    var result = window.WordleBot.constraints.filterCandidates(
+      window.WordleBot.dictionary, boardState
+    );
+
+    if (result.warning) {
+      console.warn('[WordleBot] Constraint warning: ' + result.warning);
+    }
+
+    console.log('[WordleBot] Candidates remaining: ' + result.candidates.length);
+
+    var rankings;
+    if (result.unconstrained) {
+      rankings = window.WordleBot.entropy.getFirstGuessCache();
+      console.log('[WordleBot] Using cached first-guess rankings (unconstrained)');
+    } else {
+      var guessesLeft = boardState.totalRows - boardState.guesses.length;
+      rankings = window.WordleBot.entropy.rankGuessesForState(
+        result.candidates, guessesLeft
+      );
+    }
+
+    // Build structured suggestion output
+    var suggestions = window.WordleBot.suggestions.buildSuggestions(
+      result, rankings, boardState,
+      window.WordleBot.dictionary,
+      window.WordleBot.freq.tables,
+      window.WordleBot.freq.commonness
+    );
+
+    // Store for UI consumption (always stored, even during onboarding)
+    window.WordleBot.lastSuggestions = suggestions;
+
+    // Render to panel (guarded: skip render while onboarding overlay is active)
+    if (!isOnboardingActive) {
+      window.WordleBot.panelRenderer.render(suggestions, isInitial);
+
+      // Re-add source indicator after render (render clears body innerHTML)
+      if (window.WordleBot.dictionaryResult) {
+        showSourceIndicator(window.WordleBot.dictionaryResult);
+      }
+    }
+
+    console.group('[WordleBot] Suggestions (' + suggestions.mode + '):');
+    console.log('Header:', suggestions.header);
+    console.log('Candidates:', suggestions.candidateCount);
+    if (suggestions.suggestions.length > 0) {
+      console.log('Top picks:', suggestions.suggestions.map(function (s) {
+        return s.word + ' (' + s.confidence + '%) ' + s.whyLine;
+      }));
+    }
+    if (suggestions.nearTieNote) {
+      console.log('Note:', suggestions.nearTieNote);
+    }
+    if (suggestions.gameContext.guesses.length > 0) {
+      console.log('Game context:', suggestions.gameContext.guesses.map(function (g) {
+        return g.word + ': ' + g.revealed + ' (eliminated ' + g.eliminated + ')';
+      }));
+    }
+    if (suggestions.solvedSummary) {
+      console.log('Summary:', suggestions.solvedSummary);
+    }
+    console.groupEnd();
+
+  } catch (err) {
+    var userMessage = getUserFriendlyError(err);
+    console.error('[WordleBot] Processing error:', err.message);
+    window.WordleBot.panelRenderer.setError(userMessage);
+  } finally {
+    isComputing = false;
+    window.WordleBot.panelRenderer.setLoading(false);
+  }
+}
+
 (async function init() {
   console.log('[WordleBot] Content script loaded on Wordle page');
 
@@ -304,91 +499,9 @@ async function loadDictionaryAndCaches(forceRebuild) {
           });
         }
 
-        // Board state processing pipeline
-        function processBoardState(boardState, isInitial) {
-          // Prevent concurrent processing
-          if (isComputing) {
-            console.log('[WordleBot] Skipping - already computing');
-            return;
-          }
-
-          isComputing = true;
-
-          // Show loading state (unless initial load)
-          if (!isInitial) {
-            window.WordleBot.panelRenderer.setLoading(true);
-          }
-
-          try {
-            var result = window.WordleBot.constraints.filterCandidates(
-              window.WordleBot.dictionary, boardState
-            );
-
-            if (result.warning) {
-              console.warn('[WordleBot] Constraint warning: ' + result.warning);
-            }
-
-            console.log('[WordleBot] Candidates remaining: ' + result.candidates.length);
-
-            var rankings;
-            if (result.unconstrained) {
-              rankings = window.WordleBot.entropy.getFirstGuessCache();
-              console.log('[WordleBot] Using cached first-guess rankings (unconstrained)');
-            } else {
-              var guessesLeft = boardState.totalRows - boardState.guesses.length;
-              rankings = window.WordleBot.entropy.rankGuessesForState(
-                result.candidates, guessesLeft
-              );
-            }
-
-            // Build structured suggestion output
-            var suggestions = window.WordleBot.suggestions.buildSuggestions(
-              result, rankings, boardState,
-              window.WordleBot.dictionary,
-              window.WordleBot.freq.tables,
-              window.WordleBot.freq.commonness
-            );
-
-            // Store for UI consumption
-            window.WordleBot.lastSuggestions = suggestions;
-
-            // Render to panel
-            window.WordleBot.panelRenderer.render(suggestions, isInitial);
-
-            // Re-add source indicator after render (render clears body innerHTML)
-            if (window.WordleBot.dictionaryResult) {
-              showSourceIndicator(window.WordleBot.dictionaryResult);
-            }
-
-            console.group('[WordleBot] Suggestions (' + suggestions.mode + '):');
-            console.log('Header:', suggestions.header);
-            console.log('Candidates:', suggestions.candidateCount);
-            if (suggestions.suggestions.length > 0) {
-              console.log('Top picks:', suggestions.suggestions.map(function (s) {
-                return s.word + ' (' + s.confidence + '%) ' + s.whyLine;
-              }));
-            }
-            if (suggestions.nearTieNote) {
-              console.log('Note:', suggestions.nearTieNote);
-            }
-            if (suggestions.gameContext.guesses.length > 0) {
-              console.log('Game context:', suggestions.gameContext.guesses.map(function (g) {
-                return g.word + ': ' + g.revealed + ' (eliminated ' + g.eliminated + ')';
-              }));
-            }
-            if (suggestions.solvedSummary) {
-              console.log('Summary:', suggestions.solvedSummary);
-            }
-            console.groupEnd();
-
-          } catch (err) {
-            var userMessage = getUserFriendlyError(err);
-            console.error('[WordleBot] Processing error:', err.message);
-            window.WordleBot.panelRenderer.setError(userMessage);
-          } finally {
-            isComputing = false;
-            window.WordleBot.panelRenderer.setLoading(false);
-          }
+        // Phase 17: Activate onboarding guard before any render calls
+        if (window.WordleBot.isFirstInstall === true) {
+          isOnboardingActive = true;
         }
 
         // Debounced version for observer callback
@@ -466,6 +579,11 @@ async function loadDictionaryAndCaches(forceRebuild) {
           console.log(initialState);
           console.groupEnd();
           processBoardState(initialState, true);  // isInitial = true (no fade on first load)
+        }
+
+        // Phase 17: Show onboarding overlay after initial compute (suggestions pre-loaded)
+        if (window.WordleBot.isFirstInstall === true) {
+          renderOnboarding();
         }
 
         TIMING.t_first_suggestions = performance.now();
