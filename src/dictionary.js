@@ -140,6 +140,49 @@ window.WordleBot = window.WordleBot || {};
   }
 
   /**
+   * Background update check — run after cache fast path to detect same-URL content changes.
+   *
+   * Extracts live dictionary, computes fingerprint, compares against cachedResult.fingerprint.
+   * Returns new DictionaryResult if dictionary changed, null if unchanged or extraction failed.
+   *
+   * DICT-05: Non-blocking — caller must NOT await this inline.
+   * DICT-06: Returns new result when fingerprint differs (same URL, new content).
+   *
+   * @param {Object} cachedResult - The DictionaryResult returned from the cache fast path.
+   * @returns {Promise<Object|null>} New DictionaryResult or null.
+   */
+  async function checkForUpdate(cachedResult) {
+    var extractionResult = await tryExtractionWithRetry();
+    if (!extractionResult) {
+      console.log('[WordleBot] Background check: extraction failed, keeping cached dictionary');
+      return null;
+    }
+
+    var fp = await computeFingerprint(extractionResult.words);
+    if (fp === cachedResult.fingerprint) {
+      console.log('[WordleBot] Background check: fingerprint match, dictionary unchanged');
+      return null;
+    }
+
+    // Fingerprint differs: dictionary content changed (same URL, new content -- DICT-06)
+    var newResult = {
+      words: extractionResult.words,
+      source: 'extracted',
+      freshness: 'fresh',
+      fingerprint: fp,
+      bundleUrl: extractionResult.bundleUrl
+    };
+
+    var bundledFp = await getBundledFingerprint();
+    await saveToCache(newResult, bundledFp);
+
+    console.log('[WordleBot] Background check: fingerprint mismatch -- dictionary updated (' +
+      cachedResult.fingerprint.substring(0, 8) + ' -> ' + fp.substring(0, 8) + ')');
+
+    return newResult;
+  }
+
+  /**
    * Load dictionary from chrome.storage.local cache.
    * Validates structure and bundled fingerprint match.
    * Performs O(1) bundle URL pre-check when both currentBundleUrl and
@@ -345,5 +388,6 @@ window.WordleBot = window.WordleBot || {};
 
   // ---- Export ----
   window.WordleBot.loadDictionary = loadDictionary;
+  window.WordleBot.checkForUpdate = checkForUpdate;
 
 })();
