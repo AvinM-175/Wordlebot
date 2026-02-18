@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A Chrome extension (Manifest V3) that provides real-time, entropy-based word suggestions directly on the NYT Wordle page. Reads the game board, ranks candidates by information gain, and shows explained suggestions in a floating side panel. Runs entirely in-browser with no network calls.
+A Chrome extension (Manifest V3) that provides real-time, entropy-based word suggestions directly on the NYT Wordle page. Reads the game board, ranks candidates by information gain, and shows explained suggestions in a floating side panel. Includes smart dictionary caching, first-install onboarding, and diversity-aware opener selection. Runs entirely in-browser with no network calls.
 
 ## Core Value
 
@@ -26,11 +26,13 @@ Help players understand *why* certain guesses are mathematically better — a st
 - Late-game candidate classification (likely_answer vs rare_valid) — v1.5
 - Non-blocking loading via requestIdleCallback — v1.5
 - Game-over states: solved summary + lost state — v1.5
+- Smart dictionary change detection via bundle URL caching and background fingerprint checks — v1.7
+- First-install onboarding with three-tip overlay and dismiss persistence — v1.7
+- Diversity-aware opener selection via letter-overlap penalty in near-tie reordering — v1.7
 
 ### Active
 
-- Smart dictionary change detection (replace 30-day timer with fingerprint-based staleness check)
-- First-install onboarding (dismissable intro: how it works, card expansion, shift+refresh)
+(None — planning next milestone)
 
 ### Out of Scope
 
@@ -43,10 +45,11 @@ Help players understand *why* certain guesses are mathematically better — a st
 
 ## Context
 
-Shipped v1.5 with 4,434 LOC JavaScript across 11 modules.
+Shipped v1.7 with 4,976 LOC JavaScript across 11 modules.
 Tech stack: Chrome Extension (Manifest V3), vanilla JS, Shadow DOM, chrome.storage.local.
 Dictionary: 13,751 5-letter words extracted from NYT Wordle's JS bundle.
 NYT merged their solution + guess lists into a single combined list — no separate "answer" list available.
+Dictionary caching uses bundle URL comparison (O(1)) as primary staleness signal, with background fingerprint check and 30-day timer fallback.
 
 ## Key Decisions
 
@@ -57,8 +60,13 @@ NYT merged their solution + guess lists into a single combined list — no separ
 | Compute stats over full dictionary | No separate answer list available (NYT merged them) | Good — pragmatic given NYT's change |
 | Shadow DOM isolation | Prevents NYT style interference with panel | Good — zero style conflicts observed |
 | requestIdleCallback for init | Non-blocking: user can play while engine initializes | Good — panel shows loading state, game is playable |
-| 30-day cache staleness | Balance between freshness and avoiding repeated extraction | Revisit — could miss NYT dictionary updates |
+| 30-day cache staleness | Balance between freshness and avoiding repeated extraction | Superseded — v1.7 replaced with bundle URL + fingerprint check |
 | Near-tie random sampling | Avoids deterministic top-5 that looks "hardcoded" | Good — each refresh shows different near-tied openers |
+| Bundle URL as primary cache key | O(1) string comparison vs 30-day timer; catches URL-based dictionary updates immediately | Good — zero extraction overhead on cache hit |
+| Stale-while-revalidate pattern | Serve cached words immediately, check for updates in background | Good — no perceived latency from background check |
+| Storage-based first-install detection | Single chrome.storage.local.get before loadDictionary; no background service worker | Good — zero latency impact, reliable three-state heuristic |
+| isOnboardingActive guard in processBoardState | Single chokepoint prevents all board-update paths from overwriting overlay | Good — works uniformly for observer, background update, and manual refresh |
+| Diversity via letter-overlap penalty (threshold=3) | Demotes words sharing 3+ letters with already-selected openers | Good — diverse openers without hardcoded word lists |
 
 ## Constraints
 
@@ -68,13 +76,5 @@ NYT merged their solution + guess lists into a single combined list — no separ
 - All data stays local in chrome.storage.local (Principle 2)
 - Single permission: "storage" only
 
-## Current Milestone: v1.7 Dictionary Intelligence + Onboarding
-
-**Goal:** Smarter dictionary caching and first-use guidance for new users.
-
-**Target features:**
-- Smart dictionary change detection — fingerprint NYT dictionary to detect updates without full comparison; if not feasible without performance cost, keep 30-day timer
-- First-install onboarding — dismissable intro covering how the extension works, click-to-expand cards, and shift+refresh for dictionary reset
-
 ---
-*Last updated: 2026-02-14 after v1.7 milestone start*
+*Last updated: 2026-02-18 after v1.7 milestone*
