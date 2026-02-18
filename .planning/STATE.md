@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Help players understand *why* certain guesses are mathematically better
-**Current focus:** Phase 16 — First-Install Detection Logic
+**Current focus:** Phase 17 — Onboarding UI and Integration
 
 ## Current Position
 
-Phase: 16 of 18 (First-Install Detection Logic)
+Phase: 17 of 18 (Onboarding UI and Integration)
 Plan: 1 of 1 in current phase (COMPLETE)
-Status: Phase 16 complete — ready to plan Phase 17
-Last activity: 2026-02-18 — Phase 16 plan 01 complete
+Status: Phase 17 plan 01 complete — onboarding overlay implemented
+Last activity: 2026-02-18 — Phase 17 plan 01 complete
 
-Progress: [█████░░░░░] 40% (v1.7)
+Progress: [█████░░░░░] 45% (v1.7)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3 (v1.7)
-- Average duration: 1 min
-- Total execution time: 3 min
+- Total plans completed: 4 (v1.7)
+- Average duration: 1.5 min
+- Total execution time: 6 min
 
 **By Phase:**
 
@@ -30,6 +30,7 @@ Progress: [█████░░░░░] 40% (v1.7)
 | 14-01 | 1 | 1 min | 1 min |
 | 15-01 | 1 | 1 min | 1 min |
 | 16-01 | 1 | 1 min | 1 min |
+| 17-01 | 1 | 3 min | 3 min |
 
 *Updated after each plan completion*
 
@@ -57,6 +58,9 @@ Recent decisions affecting current work:
 - [16-01]: catch sets detectionStored = null (not {}) — empty object would look like fresh install; storage failure must default to false (safe default)
 - [16-01]: Normalization guard checks detectionStored !== null before accessing .wordlebot_onboarded — skip write if storage read failed
 - [16-01]: Normalization write is fire-and-forget (.catch, no await) — does not block dictionary loading or suggestion rendering
+- [17-01]: processBoardState hoisted to module scope — dismissOnboarding (module scope) requires access to it; was previously nested inside backgroundInit
+- [17-01]: lastSuggestions assignment outside !isOnboardingActive guard — suggestions pre-computed during onboarding for instant reveal on dismiss
+- [17-01]: renderOnboarding() and dismissOnboarding() not exported to window.WordleBot — internal content.js implementation
 
 ### Roadmap Evolution
 
@@ -69,10 +73,10 @@ None yet.
 ### Blockers/Concerns
 
 - [Phase 14 RESOLVED]: findBundleUrl() was private inside dictExtractor IIFE — now exported as public API in 14-01
-- [Phase 17]: Mounting strategy undecided — (A) isOnboardingActive guard in processBoardState() vs (B) shadow root sibling mount. Must resolve before any UI code. Research recommends Option A.
+- [Phase 17 RESOLVED]: Mounting strategy — Option A (isOnboardingActive guard in processBoardState) implemented in 17-01
 
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Phase 17 context gathered
-Resume file: .planning/phases/17-onboarding-ui-and-integration/17-CONTEXT.md
+Stopped at: Completed 17-01-PLAN.md
+Resume file: .planning/phases/17-onboarding-ui-and-integration/17-01-SUMMARY.md
