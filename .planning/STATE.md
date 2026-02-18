@@ -9,7 +9,7 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 
 ## Current Position
 
-Phase: 16 of 17 (First-Install Detection Logic)
+Phase: 16 of 18 (First-Install Detection Logic)
 Plan: 1 of 1 in current phase (COMPLETE)
 Status: Phase 16 complete — ready to plan Phase 17
 Last activity: 2026-02-18 — Phase 16 plan 01 complete
@@ -57,6 +57,10 @@ Recent decisions affecting current work:
 - [16-01]: catch sets detectionStored = null (not {}) — empty object would look like fresh install; storage failure must default to false (safe default)
 - [16-01]: Normalization guard checks detectionStored !== null before accessing .wordlebot_onboarded — skip write if storage read failed
 - [16-01]: Normalization write is fire-and-forget (.catch, no await) — does not block dictionary loading or suggestion rendering
+
+### Roadmap Evolution
+
+- Phase 18 added: First-Guess Diversity Refinement — broaden opener diversity in entropy/frequency model
 
 ### Pending Todos
 
