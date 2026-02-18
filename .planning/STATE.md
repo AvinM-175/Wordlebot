@@ -70,5 +70,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 16-first-install-detection-logic/16-01-PLAN.md
-Resume file: .planning/phases/16-first-install-detection-logic/16-01-SUMMARY.md
+Stopped at: Phase 17 context gathered
+Resume file: .planning/phases/17-onboarding-ui-and-integration/17-CONTEXT.md
