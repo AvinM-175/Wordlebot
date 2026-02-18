@@ -72,10 +72,10 @@ Plans:
   3. After dismissal, reloading the page or restarting the browser never shows the onboarding again
   4. The panel renders the onboarding overlay inside the existing Shadow DOM without any new UI surfaces, permissions, or stylesheet files
   5. The board state update cycle does not overwrite the onboarding overlay while it is visible
-**Plans:** TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 17-01: TBD
+- [ ] 17-01-PLAN.md — Add onboarding overlay CSS to panelUI.js and full onboarding lifecycle to content.js
 
 #### Phase 18: First-Guess Diversity Refinement
 
