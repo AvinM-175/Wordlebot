@@ -472,7 +472,7 @@
       '  font-size: 15px;\n' +
       '  font-weight: 600;\n' +
       '  color: var(--wb-text);\n' +
-      '  margin-bottom: 12px;\n' +
+      '  margin-bottom: 4px;\n' +
       '}\n' +
       '\n' +
       '.onboarding-tips {\n' +
