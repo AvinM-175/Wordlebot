@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Help players understand *why* certain guesses are mathematically better
-**Current focus:** Phase 17 — Onboarding UI and Integration
+**Current focus:** Phase 18 — First-Guess Diversity Refinement
 
 ## Current Position
 
-Phase: 17 of 18 (Onboarding UI and Integration)
+Phase: 18 of 18 (First-Guess Diversity Refinement)
 Plan: 1 of 1 in current phase (COMPLETE)
-Status: Phase 17 plan 01 complete — onboarding overlay implemented
-Last activity: 2026-02-18 — Phase 17 plan 01 complete
+Status: Phase 18 plan 01 complete — diversity-aware opener tie-breaking implemented
+Last activity: 2026-02-18 — Phase 18 plan 01 complete
 
-Progress: [█████░░░░░] 45% (v1.7)
+Progress: [██████░░░░] 50% (v1.8)
 
 ## Performance Metrics
 
@@ -31,6 +31,7 @@ Progress: [█████░░░░░] 45% (v1.7)
 | 15-01 | 1 | 1 min | 1 min |
 | 16-01 | 1 | 1 min | 1 min |
 | 17-01 | 1 | 3 min | 3 min |
+| 18-01 | 1 | 1 min | 1 min |
 
 *Updated after each plan completion*
 
@@ -61,6 +62,9 @@ Recent decisions affecting current work:
 - [17-01]: processBoardState hoisted to module scope — dismissOnboarding (module scope) requires access to it; was previously nested inside backgroundInit
 - [17-01]: lastSuggestions assignment outside !isOnboardingActive guard — suggestions pre-computed during onboarding for instant reveal on dismiss
 - [17-01]: renderOnboarding() and dismissOnboarding() not exported to window.WordleBot — internal content.js implementation
+- [18-01]: overlapThreshold=3 — words sharing 3+ unique letters with any selected word are deferred to back of near-tie cluster
+- [18-01]: Fisher-Yates shuffle preserved after diversity reorder — diversity-ordered indices are shuffled, diverse words survive sampling more often
+- [18-01]: applyDiversityReorder only runs inside opener near-tie block — mid_game/late_game modes completely unaffected
 
 ### Roadmap Evolution
 
@@ -78,5 +82,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 17-01-PLAN.md
-Resume file: .planning/phases/17-onboarding-ui-and-integration/17-01-SUMMARY.md
+Stopped at: Completed 18-01-PLAN.md
+Resume file: .planning/phases/18-first-guess-diversity-refinement/18-01-SUMMARY.md
