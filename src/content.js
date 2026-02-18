@@ -1,5 +1,6 @@
 window.WordleBot = window.WordleBot || {};
 window.WordleBot.lastSuggestions = null;
+window.WordleBot.isFirstInstall = null;
 
 /**
  * Convert raw error to user-friendly message
@@ -144,6 +145,26 @@ function removeSourceIndicator() {
   if (existing) {
     existing.remove();
   }
+}
+
+/**
+ * Determine if the current user is a first-time installer.
+ * Three-state heuristic (from CONTEXT.md locked decisions):
+ *   - wordlebot_onboarded === true -> post-v1.7 user (false)
+ *   - wordlebot_dict OR wordlebot_cache present -> pre-v1.7 existing user (false)
+ *   - all absent -> genuine first install (true)
+ * Storage read failure: caller short-circuits to false before calling this function.
+ * @param {Object} stored - Result of chrome.storage.local.get([...])
+ * @returns {boolean}
+ */
+function detectFirstInstall(stored) {
+  if (stored.wordlebot_onboarded === true) {
+    return false;
+  }
+  if (stored.wordlebot_dict || stored.wordlebot_cache) {
+    return false;
+  }
+  return true;
 }
 
 /**
