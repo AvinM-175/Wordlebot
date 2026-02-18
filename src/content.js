@@ -244,6 +244,28 @@ async function loadDictionaryAndCaches(forceRebuild) {
         // Show dictionary source indicator in panel footer
         showSourceIndicator(loadResult.dictResult);
 
+        // DICT-05: Non-blocking background update check (only when dictionary came from cache)
+        if (loadResult.dictResult.source === 'cached') {
+          window.WordleBot.checkForUpdate(loadResult.dictResult).then(function(newResult) {
+            if (!newResult) return;
+            // DICT-06: Fingerprint mismatch detected -- rebuild and re-render
+            console.log('[WordleBot] Background update: rebuilding caches and re-rendering suggestions');
+            clearCaches().then(function() {
+              return loadDictionaryAndCaches(true);
+            }).then(function(reloadResult) {
+              showSourceIndicator(reloadResult.dictResult);
+              var currentState = window.WordleBot.readBoardState();
+              if (currentState && !isComputing) {
+                processBoardState(currentState, false);
+              }
+            }).catch(function(err) {
+              console.warn('[WordleBot] Background rebuild failed: ' + err.message);
+            });
+          }).catch(function(err) {
+            console.warn('[WordleBot] Background update check failed: ' + err.message);
+          });
+        }
+
         // Board state processing pipeline
         function processBoardState(boardState, isInitial) {
           // Prevent concurrent processing
