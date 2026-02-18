@@ -64,5 +64,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Phase 15-01 complete — stale-while-revalidate background update check fully wired
-Resume file: None
+Stopped at: Phase 16 context gathered — first-install detection decisions captured
+Resume file: .planning/phases/16-first-install-detection-logic/16-CONTEXT.md
