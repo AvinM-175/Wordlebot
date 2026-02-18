@@ -461,6 +461,67 @@
       '  padding: 6px 0 2px;\n' +
       '  border-top: 1px solid var(--wb-border);\n' +
       '  margin-top: 8px;\n' +
+      '}\n' +
+      '\n' +
+      '/* Onboarding overlay */\n' +
+      '.onboarding-overlay {\n' +
+      '  padding: 12px 0;\n' +
+      '}\n' +
+      '\n' +
+      '.onboarding-title {\n' +
+      '  font-size: 15px;\n' +
+      '  font-weight: 600;\n' +
+      '  color: var(--wb-text);\n' +
+      '  margin-bottom: 12px;\n' +
+      '}\n' +
+      '\n' +
+      '.onboarding-tips {\n' +
+      '  list-style: none;\n' +
+      '  padding: 0;\n' +
+      '  margin: 0 0 16px 0;\n' +
+      '}\n' +
+      '\n' +
+      '.onboarding-tip {\n' +
+      '  font-size: 13px;\n' +
+      '  color: var(--wb-text);\n' +
+      '  line-height: 1.5;\n' +
+      '  padding: 8px 0;\n' +
+      '  border-bottom: 1px solid var(--wb-border);\n' +
+      '}\n' +
+      '\n' +
+      '.onboarding-tip:last-child {\n' +
+      '  border-bottom: none;\n' +
+      '}\n' +
+      '\n' +
+      '.onboarding-tip-number {\n' +
+      '  font-weight: 600;\n' +
+      '  color: var(--wb-text-secondary);\n' +
+      '  margin-right: 4px;\n' +
+      '}\n' +
+      '\n' +
+      '.onboarding-dismiss-btn {\n' +
+      '  display: block;\n' +
+      '  width: 100%;\n' +
+      '  padding: 10px 0;\n' +
+      '  background-color: #6aaa64;\n' +
+      '  color: #ffffff;\n' +
+      '  border: none;\n' +
+      '  border-radius: 4px;\n' +
+      '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;\n' +
+      '  font-size: 14px;\n' +
+      '  font-weight: 600;\n' +
+      '  cursor: pointer;\n' +
+      '  text-align: center;\n' +
+      '  margin-top: 4px;\n' +
+      '}\n' +
+      '\n' +
+      '.onboarding-dismiss-btn:hover {\n' +
+      '  background-color: #538d4e;\n' +
+      '}\n' +
+      '\n' +
+      '.onboarding-dismiss-btn:focus {\n' +
+      '  outline: 2px solid var(--wb-text-secondary);\n' +
+      '  outline-offset: 2px;\n' +
       '}\n';
 
     sheet.replaceSync(css);
