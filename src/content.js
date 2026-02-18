@@ -173,6 +173,23 @@ function detectFirstInstall(stored) {
  * @returns {Object} { words, fingerprint, wasRebuilt, dictResult }
  */
 async function loadDictionaryAndCaches(forceRebuild) {
+  // Phase 16: Read detection keys BEFORE loadDictionary can write wordlebot_dict
+  var detectionStored;
+  try {
+    detectionStored = await chrome.storage.local.get(['wordlebot_dict', 'wordlebot_cache', 'wordlebot_onboarded']);
+  } catch (e) {
+    detectionStored = null;
+  }
+  // Storage read failure -> fallback to "existing user" per locked decision (safe default)
+  window.WordleBot.isFirstInstall = detectionStored ? detectFirstInstall(detectionStored) : false;
+
+  // Normalize pre-v1.7 existing users to post-v1.7 state (fire-and-forget)
+  if (!window.WordleBot.isFirstInstall && detectionStored && detectionStored.wordlebot_onboarded !== true) {
+    chrome.storage.local.set({ wordlebot_onboarded: true }).catch(function(err) {
+      console.warn('[WordleBot] Failed to write onboarded flag: ' + err.message);
+    });
+  }
+
   // Load dictionary via orchestrator (three-tier cascade)
   var dictResult = await window.WordleBot.loadDictionary(forceRebuild);
   var fingerprint = dictResult.fingerprint;
