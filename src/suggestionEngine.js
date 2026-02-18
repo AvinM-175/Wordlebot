@@ -327,7 +327,52 @@ window.WordleBot = window.WordleBot || {};
     return parts.join(' ');
   }
 
-  // --- Helper 9: getHeader ---
+  // --- Helper 9: getLetterSet ---
+  // Returns an object mapping each unique letter in the word to true.
+  function getLetterSet(word) {
+    var set = {};
+    for (var i = 0; i < word.length; i++) {
+      set[word.charAt(i)] = true;
+    }
+    return set;
+  }
+
+  // --- Helper 10: applyDiversityReorder ---
+  // Reorders the near-tie cluster so words with diverse letter profiles come first.
+  // Words sharing >= overlapThreshold letters with any already-selected word are deferred.
+  function applyDiversityReorder(sourceRankings, clusterSize, overlapThreshold) {
+    var selected = [];
+    var deferred = [];
+
+    for (var i = 0; i < clusterSize; i++) {
+      var candidateSet = getLetterSet(sourceRankings[i].word);
+      var overlaps = false;
+
+      for (var s = 0; s < selected.length; s++) {
+        var selectedSet = getLetterSet(sourceRankings[selected[s]].word);
+        var overlapCount = 0;
+        for (var letter in candidateSet) {
+          if (selectedSet[letter]) {
+            overlapCount++;
+          }
+        }
+        if (overlapCount >= overlapThreshold) {
+          overlaps = true;
+          break;
+        }
+      }
+
+      if (overlaps) {
+        deferred.push(i);
+      } else {
+        selected.push(i);
+      }
+    }
+
+    return selected.concat(deferred);
+  }
+
+  // --- Helper 11: getHeader ---
   // Returns the header string for the given mode.
   function getHeader(mode, boardState) {
     if (mode === 'opener') { return 'Best openers'; }
@@ -421,10 +466,9 @@ window.WordleBot = window.WordleBot || {};
       if (clusterSize > MAX_SUGGESTIONS) {
         // Fisher-Yates shuffle on cluster indices, take first MAX_SUGGESTIONS
         openerClusterSize = clusterSize;
-        var clusterIndices = new Array(clusterSize);
-        for (var ci = 0; ci < clusterSize; ci++) {
-          clusterIndices[ci] = ci;
-        }
+        // Phase 18: Diversity-aware reordering — diverse words come first in cluster
+        var diverseOrder = applyDiversityReorder(sourceRankings, clusterSize, 3);
+        var clusterIndices = diverseOrder;
         for (var fi = clusterSize - 1; fi > 0; fi--) {
           var fj = Math.floor(Math.random() * (fi + 1));
           var tmp = clusterIndices[fi];
