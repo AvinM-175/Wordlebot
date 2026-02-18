@@ -19,8 +19,8 @@ Requirements for v1.7: Dictionary Intelligence + Onboarding.
 
 ### First-Install Onboarding
 
-- [ ] **ONBD-01**: Extension detects first-install state via chrome.storage.local flag (no background service worker needed)
-- [ ] **ONBD-02**: Extension distinguishes true first-install from existing users upgrading to v1.7 (existing cache data = existing user, skip onboarding)
+- [x] **ONBD-01**: Extension detects first-install state via chrome.storage.local flag (no background service worker needed)
+- [x] **ONBD-02**: Extension distinguishes true first-install from existing users upgrading to v1.7 (existing cache data = existing user, skip onboarding)
 - [ ] **ONBD-03**: First-time users see a dismissable onboarding intro explaining how the extension works
 - [ ] **ONBD-04**: Onboarding covers three topics: what WordleBot does, click cards to expand details, Shift+Refresh to reset dictionary
 - [ ] **ONBD-05**: User can dismiss onboarding with a clear action ("Got it" button) and it never appears again
@@ -56,8 +56,8 @@ Requirements for v1.7: Dictionary Intelligence + Onboarding.
 | DICT-05 | Phase 15 | Complete |
 | DICT-06 | Phase 15 | Complete |
 | DICT-07 | Phase 14 | Done |
-| ONBD-01 | Phase 16 | Pending |
-| ONBD-02 | Phase 16 | Pending |
+| ONBD-01 | Phase 16 | Complete |
+| ONBD-02 | Phase 16 | Complete |
 | ONBD-03 | Phase 17 | Pending |
 | ONBD-04 | Phase 17 | Pending |
 | ONBD-05 | Phase 17 | Pending |

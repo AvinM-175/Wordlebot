@@ -56,7 +56,7 @@ Plans:
   1. A user who installs the extension for the first time (no prior WordleBot storage) is flagged as a first-install at startup
   2. A user who installed WordleBot before v1.7 (wordlebot_dict or wordlebot_cache present in storage) is treated as an existing user and skipped for onboarding — even though wordlebot_onboarded is absent
   3. The detection logic runs synchronously with the init flow and does not delay dictionary loading or suggestion rendering
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 16-01-PLAN.md — Add detectFirstInstall helper and wire detection into loadDictionaryAndCaches
@@ -86,5 +86,5 @@ Plans:
 | 1-13. v1.5 phases | v1.5 | Complete | Complete | 2026-02-12 |
 | 14. Dictionary Change Detection Infrastructure | v1.7 | 1/1 | Complete | 2026-02-17 |
 | 15. Content.js Wiring — Background Update Check | v1.7 | Complete    | 2026-02-18 | - |
-| 16. First-Install Detection Logic | v1.7 | 0/1 | Not started | - |
+| 16. First-Install Detection Logic | v1.7 | Complete    | 2026-02-18 | - |
 | 17. Onboarding UI and Integration | v1.7 | 0/TBD | Not started | - |
