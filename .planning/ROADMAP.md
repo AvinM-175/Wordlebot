@@ -42,7 +42,7 @@ Plans:
   2. When the NYT bundle URL changes between page loads, the extension automatically re-extracts the dictionary and rebuilds caches without any user action
   3. When the bundle URL is the same but the content fingerprint differs (same URL, new content), the extension detects the mismatch in the background and re-renders suggestions using the updated dictionary
   4. The browser console shows a log entry indicating whether a re-extraction was triggered by URL change or fingerprint mismatch, distinguishing it from timer-based fallback
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 15-01-PLAN.md — Add checkForUpdate to dictionary.js and wire fire-and-forget background check into content.js
@@ -85,6 +85,6 @@ Plans:
 |-------|-----------|----------------|--------|-----------|
 | 1-13. v1.5 phases | v1.5 | Complete | Complete | 2026-02-12 |
 | 14. Dictionary Change Detection Infrastructure | v1.7 | 1/1 | Complete | 2026-02-17 |
-| 15. Content.js Wiring — Background Update Check | v1.7 | 0/1 | Not started | - |
+| 15. Content.js Wiring — Background Update Check | v1.7 | Complete    | 2026-02-18 | - |
 | 16. First-Install Detection Logic | v1.7 | 0/TBD | Not started | - |
 | 17. Onboarding UI and Integration | v1.7 | 0/TBD | Not started | - |
