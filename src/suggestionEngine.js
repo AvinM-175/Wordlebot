@@ -539,7 +539,7 @@ window.WordleBot = window.WordleBot || {};
     if (mode === 'opener') {
       if (openerClusterSize > MAX_SUGGESTIONS) {
         // Random sampling was triggered — always show disclaimer
-        nearTieNote = 'These openers are statistically very close in expected value \u2014 showing 5 of ' + openerClusterSize + ' near-tied words.';
+        nearTieNote = 'These openers are statistically very close in expected value \u2014 showing 5 of ' + openerClusterSize + ' near-tied words, chosen for letter variety.';
       } else {
         nearTieNote = detectNearTie(suggestions);
       }
