@@ -11,7 +11,7 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 
 Phase: v1.7 complete (18 phases total across 2 milestones)
 Status: Milestone v1.7 shipped — all 5 phases (14-18) complete
-Last activity: 2026-02-18 — v1.7 milestone archived
+Last activity: 2026-02-18 - Completed quick task 1: Reduce spacing below Welcome to WordleBot header on intro page so Got It button is visible without scrolling
 
 Progress: [██████████] 100% (v1.7)
 
@@ -50,6 +50,12 @@ None.
 ### Blockers/Concerns
 
 None — all resolved.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Reduce spacing below Welcome to WordleBot header on intro page so Got It button is visible without scrolling | 2026-02-18 | 2c24d54 | [1-reduce-spacing-below-welcome-to-wordlebo](./quick/1-reduce-spacing-below-welcome-to-wordlebo/) |
 
 ## Session Continuity
 
