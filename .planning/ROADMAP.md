@@ -72,7 +72,7 @@ Plans:
   3. After dismissal, reloading the page or restarting the browser never shows the onboarding again
   4. The panel renders the onboarding overlay inside the existing Shadow DOM without any new UI surfaces, permissions, or stylesheet files
   5. The board state update cycle does not overwrite the onboarding overlay while it is visible
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 17-01-PLAN.md — Add onboarding overlay CSS to panelUI.js and full onboarding lifecycle to content.js
@@ -96,5 +96,5 @@ Plans:
 | 14. Dictionary Change Detection Infrastructure | v1.7 | 1/1 | Complete | 2026-02-17 |
 | 15. Content.js Wiring — Background Update Check | v1.7 | Complete    | 2026-02-18 | - |
 | 16. First-Install Detection Logic | v1.7 | Complete    | 2026-02-18 | - |
-| 17. Onboarding UI and Integration | v1.7 | 0/TBD | Not started | - |
+| 17. Onboarding UI and Integration | v1.7 | Complete    | 2026-02-18 | - |
 | 18. First-Guess Diversity Refinement | v1.7 | 0/TBD | Not started | - |

@@ -21,11 +21,11 @@ Requirements for v1.7: Dictionary Intelligence + Onboarding.
 
 - [x] **ONBD-01**: Extension detects first-install state via chrome.storage.local flag (no background service worker needed)
 - [x] **ONBD-02**: Extension distinguishes true first-install from existing users upgrading to v1.7 (existing cache data = existing user, skip onboarding)
-- [ ] **ONBD-03**: First-time users see a dismissable onboarding intro explaining how the extension works
-- [ ] **ONBD-04**: Onboarding covers three topics: what WordleBot does, click cards to expand details, Shift+Refresh to reset dictionary
-- [ ] **ONBD-05**: User can dismiss onboarding with a clear action ("Got it" button) and it never appears again
-- [ ] **ONBD-06**: Onboarding dismissal state persists across page reloads and browser restarts
-- [ ] **ONBD-07**: Onboarding renders inside the existing Shadow DOM panel (no new UI surfaces or permissions)
+- [x] **ONBD-03**: First-time users see a dismissable onboarding intro explaining how the extension works
+- [x] **ONBD-04**: Onboarding covers three topics: what WordleBot does, click cards to expand details, Shift+Refresh to reset dictionary
+- [x] **ONBD-05**: User can dismiss onboarding with a clear action ("Got it" button) and it never appears again
+- [x] **ONBD-06**: Onboarding dismissal state persists across page reloads and browser restarts
+- [x] **ONBD-07**: Onboarding renders inside the existing Shadow DOM panel (no new UI surfaces or permissions)
 
 ## Future Requirements
 
@@ -58,11 +58,11 @@ Requirements for v1.7: Dictionary Intelligence + Onboarding.
 | DICT-07 | Phase 14 | Done |
 | ONBD-01 | Phase 16 | Complete |
 | ONBD-02 | Phase 16 | Complete |
-| ONBD-03 | Phase 17 | Pending |
-| ONBD-04 | Phase 17 | Pending |
-| ONBD-05 | Phase 17 | Pending |
-| ONBD-06 | Phase 17 | Pending |
-| ONBD-07 | Phase 17 | Pending |
+| ONBD-03 | Phase 17 | Complete |
+| ONBD-04 | Phase 17 | Complete |
+| ONBD-05 | Phase 17 | Complete |
+| ONBD-06 | Phase 17 | Complete |
+| ONBD-07 | Phase 17 | Complete |
 
 **Coverage:**
 - v1.7 requirements: 14 total
