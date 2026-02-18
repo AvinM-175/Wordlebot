@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Help players understand *why* certain guesses are mathematically better
-**Current focus:** Phase 15 — Content.js Wiring — Background Update Check
+**Current focus:** Phase 16 — First-Install Detection Logic
 
 ## Current Position
 
-Phase: 15 of 17 (Content.js Wiring — Background Update Check)
+Phase: 16 of 17 (First-Install Detection Logic)
 Plan: 1 of 1 in current phase (COMPLETE)
-Status: Phase 15 complete — ready to plan Phase 16
-Last activity: 2026-02-18 — Phase 15 plan 01 complete
+Status: Phase 16 complete — ready to plan Phase 17
+Last activity: 2026-02-18 — Phase 16 plan 01 complete
 
-Progress: [████░░░░░░] 30% (v1.7)
+Progress: [█████░░░░░] 40% (v1.7)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2 (v1.7)
+- Total plans completed: 3 (v1.7)
 - Average duration: 1 min
-- Total execution time: 2 min
+- Total execution time: 3 min
 
 **By Phase:**
 
@@ -29,6 +29,7 @@ Progress: [████░░░░░░] 30% (v1.7)
 |-------|-------|-------|----------|
 | 14-01 | 1 | 1 min | 1 min |
 | 15-01 | 1 | 1 min | 1 min |
+| 16-01 | 1 | 1 min | 1 min |
 
 *Updated after each plan completion*
 
@@ -51,6 +52,11 @@ Recent decisions affecting current work:
 - [15-01]: Fire-and-forget via .then() chain (not await) — ensures suggestions render immediately from cache without blocking on background check
 - [15-01]: isComputing guard before processBoardState in re-render path — prevents race with initial compute; background check latency (500ms-12s) makes race unlikely
 - [15-01]: clearCaches() before loadDictionaryAndCaches(true) — two extractions on background update path is expected and correct; browser cache makes second extraction fast
+- [16-01]: detectFirstInstall placed in content.js (not dictionary.js) — detection is a content script concern about user state, not a dictionary concern
+- [16-01]: window.WordleBot.isFirstInstall initialized to null — null means not-yet-determined; Phase 17 checks === true so null correctly maps to "don't show onboarding"
+- [16-01]: catch sets detectionStored = null (not {}) — empty object would look like fresh install; storage failure must default to false (safe default)
+- [16-01]: Normalization guard checks detectionStored !== null before accessing .wordlebot_onboarded — skip write if storage read failed
+- [16-01]: Normalization write is fire-and-forget (.catch, no await) — does not block dictionary loading or suggestion rendering
 
 ### Pending Todos
 
@@ -64,5 +70,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Phase 16 context gathered — first-install detection decisions captured
-Resume file: .planning/phases/16-first-install-detection-logic/16-CONTEXT.md
+Stopped at: Completed 16-first-install-detection-logic/16-01-PLAN.md
+Resume file: .planning/phases/16-first-install-detection-logic/16-01-SUMMARY.md
