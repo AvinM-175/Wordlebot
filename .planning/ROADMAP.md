@@ -81,7 +81,7 @@ Plans:
 
 **Goal:** Refine the entropy/frequency model to naturally surface a broader variety of strong opening words (e.g., CRANE, SLATE, ADIEU alongside TARES) without hardcoding — so first-guess recommendations feel less repetitive and better represent the space of strong openers.
 **Depends on:** Phase 17
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 18-01-PLAN.md — Add diversity-aware near-tie reordering and update footer message
@@ -97,4 +97,4 @@ Plans:
 | 15. Content.js Wiring — Background Update Check | v1.7 | Complete    | 2026-02-18 | - |
 | 16. First-Install Detection Logic | v1.7 | Complete    | 2026-02-18 | - |
 | 17. Onboarding UI and Integration | v1.7 | Complete    | 2026-02-18 | - |
-| 18. First-Guess Diversity Refinement | v1.7 | 0/TBD | Not started | - |
+| 18. First-Guess Diversity Refinement | v1.7 | Complete    | 2026-02-18 | - |
