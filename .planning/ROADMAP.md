@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.5 Frequency Analysis + Polish** - Phases 1-13 (shipped 2026-02-12)
-- 🚧 **v1.7 Dictionary Intelligence + Onboarding** - Phases 14-17 (in progress)
+- 🚧 **v1.7 Dictionary Intelligence + Onboarding** - Phases 14-18 (in progress)
 
 ## Phases
 
@@ -77,9 +77,18 @@ Plans:
 Plans:
 - [ ] 17-01: TBD
 
+#### Phase 18: First-Guess Diversity Refinement
+
+**Goal:** Refine the entropy/frequency model to naturally surface a broader variety of strong opening words (e.g., CRANE, SLATE, ADIEU alongside TARES) without hardcoding — so first-guess recommendations feel less repetitive and better represent the space of strong openers.
+**Depends on:** Phase 17
+**Plans:** TBD
+
+Plans:
+- [ ] 18-01: TBD
+
 ## Progress
 
-**Execution Order:** 14 → 15 → 16 → 17
+**Execution Order:** 14 → 15 → 16 → 17 → 18
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -88,3 +97,4 @@ Plans:
 | 15. Content.js Wiring — Background Update Check | v1.7 | Complete    | 2026-02-18 | - |
 | 16. First-Install Detection Logic | v1.7 | Complete    | 2026-02-18 | - |
 | 17. Onboarding UI and Integration | v1.7 | 0/TBD | Not started | - |
+| 18. First-Guess Diversity Refinement | v1.7 | 0/TBD | Not started | - |
